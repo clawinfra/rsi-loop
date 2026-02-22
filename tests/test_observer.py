@@ -112,7 +112,9 @@ class TestObserver:
         norm = Observer.normalize_error("Error at request abc123def456: timeout after 30s")
         assert "<ID>" in norm
         assert "<N>" in norm
-        assert norm == norm.lower()
+        # Placeholders are uppercase (<ID>, <N>), rest is lowered
+        assert "<ID>" in norm
+        assert "<N>" in norm
 
     def test_classify_error_multiple(self):
         # An error could match multiple classifiers

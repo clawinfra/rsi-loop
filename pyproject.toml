@@ -47,3 +47,9 @@ select = ["E", "F", "I", "W", "UP"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--cov=rsi_loop --cov-report=term-missing"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
