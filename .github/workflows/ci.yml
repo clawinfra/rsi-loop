@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Lint with ruff
+        run: uv run ruff check rsi_loop/ tests/
+
+      - name: Run tests with coverage
+        run: uv run python -m pytest tests/ -v --tb=short --co -q 2>/dev/null; uv run python -m pytest tests/ -v --cov=rsi_loop --cov-report=term-missing --cov-fail-under=85
+
+      - name: Build package
+        run: uv run python -m build
