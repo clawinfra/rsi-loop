@@ -50,6 +50,9 @@ addopts = "--cov=rsi_loop --cov-report=term-missing"
 
 [dependency-groups]
 dev = [
+    "build>=1.4.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
+    "ruff>=0.15.2",
+    "twine>=6.2.0",
 ]
