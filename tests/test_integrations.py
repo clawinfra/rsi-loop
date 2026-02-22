@@ -2,8 +2,6 @@
 
 import json
 
-import pytest
-
 from rsi_loop.integrations.claude_code import ClaudeCodeAdapter
 from rsi_loop.integrations.generic import GenericAdapter
 

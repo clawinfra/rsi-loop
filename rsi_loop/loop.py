@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import threading
-import time
 
 from rsi_loop.analyzer import Analyzer
 from rsi_loop.fixer import Fixer

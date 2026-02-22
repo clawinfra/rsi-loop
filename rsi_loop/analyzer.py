@@ -9,7 +9,6 @@ from pathlib import Path
 from rsi_loop.observer import Observer
 from rsi_loop.types import HIGH_SEVERITY_ISSUES, Config, Outcome, Pattern
 
-
 # Category classification by issue
 _ISSUE_CATEGORIES: dict[str, str] = {
     "skill_gap": "skill_gap", "missing_tool": "skill_gap", "wrong_output": "skill_gap",

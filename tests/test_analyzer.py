@@ -98,7 +98,7 @@ class TestAnalyzer:
             )
         a = Analyzer(tmp_config, observer=obs)
         patterns = a.analyze()
-        categories = {p.category for p in patterns}
+        _ = {p.category for p in patterns}
         # Should find error_cluster or tool_reliability
         assert len(patterns) > 0
 

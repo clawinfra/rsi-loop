@@ -1,8 +1,5 @@
 """Tests for the Observer module."""
 
-import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -72,7 +69,7 @@ class TestObserver:
     def test_quality_clamping(self, observer):
         o = observer.record_simple("task", success=True, quality=10)
         assert o.quality == 5
-        o2 = observer.record_simple("task", success=True, quality=-1)
+        observer.record_simple("task", success=True, quality=-1)
         # Failure path clamps to min(quality, 2), but success doesn't
         # The record method clamps to 1-5
         loaded = observer.load_outcomes(days=365)
@@ -128,7 +125,7 @@ class TestObserver:
             tags=["important", "weekly"],
             metadata={"run_id": "abc123"},
         )
-        recorded = observer.record(outcome)
+        observer.record(outcome)
         loaded = observer.load_outcomes(days=1)
         assert loaded[0].tags == ["important", "weekly"]
 
