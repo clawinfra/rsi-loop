@@ -38,7 +38,7 @@ RSI Loop is the missing primitive: a universal **recursive self-improvement** lo
 uv add rsi-loop
 ```
 
-> **Not using uv?** `pip install rsi-loop` works too.
+> **Not using uv?** `uv add rsi-loop` works too.
 
 ```python
 from rsi_loop import RSILoop
