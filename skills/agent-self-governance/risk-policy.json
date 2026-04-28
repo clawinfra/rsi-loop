@@ -1,0 +1,81 @@
+{
+  "_comment": "Per-class approval policies and override mechanisms.",
+  "version": "1.0.0",
+  "policies": {
+    "read": {
+      "level": "auto",
+      "description": "Always allowed; no confirmation or prompt required.",
+      "exit_code": 0,
+      "output": "ALLOW"
+    },
+    "mutate": {
+      "level": "prompt",
+      "description": "Prompt the user when running inside a sub-agent; auto-approved when running as the main agent.",
+      "context_rules": {
+        "main_agent": "auto",
+        "sub_agent": "prompt"
+      },
+      "exit_code": 1,
+      "output": "PROMPT"
+    },
+    "destructive": {
+      "level": "confirm",
+      "description": "Always require explicit user confirmation before executing, regardless of agent context.",
+      "exit_code": 2,
+      "output": "CONFIRM"
+    },
+    "external_write": {
+      "level": "per-platform",
+      "description": "Check the per-platform policy file under platform-policies/<platform>.json. Falls back to CONFIRM if no platform policy exists.",
+      "fallback": "confirm",
+      "platform_policy_dir": "platform-policies/",
+      "exit_code": 2,
+      "output": "CONFIRM"
+    },
+    "financial": {
+      "level": "threshold",
+      "description": "Auto-approved for transactions strictly under the threshold; CONFIRM required at or above.",
+      "auto_threshold_usd": 500,
+      "below_threshold": {
+        "exit_code": 0,
+        "output": "ALLOW"
+      },
+      "at_or_above_threshold": {
+        "exit_code": 2,
+        "output": "CONFIRM"
+      }
+    }
+  },
+  "session_key_overrides": {
+    "_comment": "Per-session keys can relax or tighten policies for the duration of a session. Keys are set in the session environment or passed via --session-key CLI flag.",
+    "schema": {
+      "key": "string — opaque session identifier",
+      "overrides": {
+        "<risk_class>": {
+          "level": "auto | prompt | confirm",
+          "expires_at": "ISO-8601 datetime or null for session-scoped"
+        }
+      }
+    },
+    "example": {
+      "key": "sess_abc123",
+      "overrides": {
+        "mutate": {
+          "level": "auto",
+          "expires_at": null
+        },
+        "external_write": {
+          "level": "prompt",
+          "expires_at": "2026-05-01T00:00:00Z"
+        }
+      }
+    },
+    "env_var": "RSI_SESSION_KEY",
+    "precedence": "session_key_overrides take priority over class defaults but NOT over destructive class hardcoded confirm."
+  },
+  "hardcoded_confirms": [
+    "destructive"
+  ]
+}
+```
+---

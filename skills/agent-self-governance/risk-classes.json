@@ -1,0 +1,116 @@
+{
+  "_comment": "Maps tool names (and optional sub-actions) to risk classes.",
+  "version": "1.0.0",
+  "classes": {
+    "read": {
+      "description": "Non-mutating reads; no side-effects outside the agent process.",
+      "tools": [
+        "read",
+        "file_read",
+        "web_fetch",
+        "memory_search",
+        "memory_get",
+        "exec__read",
+        "image",
+        "pdf",
+        "sessions_list",
+        "sessions_history"
+      ],
+      "tool_patterns": [
+        {
+          "tool": "exec",
+          "match": "read-only",
+          "description": "exec calls that only read (cat, ls, grep, head, tail, find, etc.)"
+        }
+      ]
+    },
+    "mutate": {
+      "description": "Writes or edits that change local state but are recoverable.",
+      "tools": [
+        "write",
+        "file_write",
+        "edit",
+        "file_edit"
+      ],
+      "tool_patterns": [
+        {
+          "tool": "exec",
+          "match": "file-write",
+          "description": "exec calls that write files (tee, cp, mv, sed -i, etc.)"
+        },
+        {
+          "tool": "message",
+          "actions": ["edit", "delete_single"],
+          "description": "Editing or deleting a single message"
+        }
+      ]
+    },
+    "destructive": {
+      "description": "Irreversible local or remote state destruction.",
+      "tools": [],
+      "tool_patterns": [
+        {
+          "tool": "exec",
+          "match": "destructive",
+          "examples": ["rm -rf", "git push --force", "git push --force-with-lease", "dd", "mkfs", "> /dev/", "truncate"],
+          "description": "exec calls with irreversible side-effects"
+        },
+        {
+          "tool": "message",
+          "actions": ["delete"],
+          "limit_threshold": 10,
+          "description": "Bulk deletion of messages beyond threshold"
+        },
+        {
+          "tool": "sessions",
+          "actions": ["kill", "steer"],
+          "description": "Terminating or steering a running session"
+        }
+      ]
+    },
+    "external_write": {
+      "description": "Writes that cross a trust boundary to an external system or person.",
+      "tools": [
+        "whatsapp_login",
+        "tts"
+      ],
+      "tool_patterns": [
+        {
+          "tool": "message",
+          "actions": ["send"],
+          "requires": "channel",
+          "description": "Sending a message to an external channel"
+        },
+        {
+          "tool": "cron",
+          "actions": ["add"],
+          "requires": "delivery",
+          "description": "Scheduling a cron job that delivers externally"
+        }
+      ],
+      "per_platform_policy": "skills/agent-self-governance/platform-policies/"
+    },
+    "financial": {
+      "description": "Commands that execute or commit financial transactions.",
+      "tools": [],
+      "tool_patterns": [
+        {
+          "tool": "exec",
+          "match": "financial",
+          "examples": ["trade", "order", "buy", "sell", "transfer", "withdraw", "deposit"],
+          "description": "exec calls invoking trade-execution or payment APIs"
+        }
+      ],
+      "auto_threshold_usd": 500
+    }
+  },
+  "classification_precedence": [
+    "financial",
+    "destructive",
+    "external_write",
+    "mutate",
+    "read"
+  ]
+}
+```
+---
