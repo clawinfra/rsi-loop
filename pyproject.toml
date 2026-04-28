@@ -23,6 +23,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+dependencies = [
+    "datasets>=4.8.5",
+]
 
 [project.optional-dependencies]
 webhook = ["flask>=3.0"]
